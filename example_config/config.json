@@ -1,0 +1,6 @@
+{
+    "drives": {
+        "drive1": "wdir/drive1",
+        "drive2": "wdir/drive2"
+    }
+}
