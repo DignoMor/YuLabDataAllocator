@@ -20,38 +20,39 @@ class StorageManager:
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS data_location (
                     branch_path TEXT PRIMARY KEY,
-                    drive_path TEXT,
-                    path TEXT
+                    drive_name TEXT
                 );
             ''')
             conn.commit()
 
-    def record_location(self, branch_path, drive_path):
+    def record_location(self, branch_path, drive_name):
         """
         Record the storage location of a branch.
+
+        Keyword arguments:
+        - branch_path: The path of the branch.
+        - drive_name: The name of the drive.
         """
         if self.check_duplicates(branch_path):
             raise Exception(f"[ERROR] Duplicate entry for '{branch_path}' exists.")
         
-        full_branch_path = os.path.join(drive_path, branch_path)
-        
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO data_location (branch_path, drive_path, path)
-                VALUES (?, ?, ?);
-            ''', (branch_path, drive_path, full_branch_path))
+                INSERT INTO data_location (branch_path, drive_name)
+                VALUES (?, ?);
+            ''', (branch_path, drive_name))
             conn.commit()
 
-    def get_location(self, branch_path):
+    def get_drive(self, branch_path):
         """
-        Retrieve the stored path for a branch.
+        Retrieve the drive a given branch is stored in.
         Return None if the branch is not found.
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                SELECT path FROM data_location
+                SELECT drive_name FROM data_location
                 WHERE branch_path= ?;
             ''', (branch_path,))
             result = cursor.fetchone()

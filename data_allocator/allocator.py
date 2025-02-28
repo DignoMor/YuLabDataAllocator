@@ -42,7 +42,7 @@ class Allocator:
         os.makedirs(target_path, exist_ok=True)
 
         # Record the location
-        self.storage.record_location(branch_name, self.config.get_drive_paths()[target_drive])
+        self.storage.record_location(branch_name, target_drive)
 
         return target_path
 
@@ -50,8 +50,9 @@ class Allocator:
         """
         Retrieve the full path for a given branch name.
         """
-        path = self.storage.get_location(branch_name)
-        if path:
+        drive = self.storage.get_drive(branch_name)
+        if drive:
+            path = os.path.join(self.config.get_drive_paths()[drive], branch_name)
             return path
         else:
             raise Exception(f"[ERROR] No location found for '{branch_name}'")

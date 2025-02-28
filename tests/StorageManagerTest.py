@@ -25,9 +25,9 @@ class TestStorageManager(unittest.TestCase):
         """
         Test recording a new location.
         """
-        self.storage.record_location("test_folder/test_branch", "wdir/drive1")
-        location = self.storage.get_location("test_folder/test_branch")
-        self.assertEqual(location, "wdir/drive1/test_folder/test_branch")
+        self.storage.record_location("test_folder/test_branch", "drive1")
+        location = self.storage.get_drive("test_folder/test_branch")
+        self.assertEqual(location, "drive1")
 
     def test_duplicate_check(self):
         """
@@ -41,9 +41,9 @@ class TestStorageManager(unittest.TestCase):
         """
         Test deleting a location record.
         """
-        self.storage.record_location("test_delete", "wdir/drive1")
+        self.storage.record_location("test_delete", "drive1")
         self.storage.delete_location("test_delete")
-        location = self.storage.get_location("test_delete")
+        location = self.storage.get_drive("test_delete")
         self.assertIsNone(location)
 
 if __name__ == "__main__":
