@@ -88,3 +88,20 @@ class StorageManager:
             ''', (branch_path, ))
             conn.commit()
         
+    def get_all_locations2drive(self):
+        '''
+        Return a dictionary of all branch locations 
+        and their corresponding drive names.
+
+        Return: 
+        - locations2drive: dictionary of branch and drive names
+        '''
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT * FROM data_location;
+            ''')
+            locations = {row[0]: row[1] for row in cursor.fetchall()}
+        
+        return locations
+
