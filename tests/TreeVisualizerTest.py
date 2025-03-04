@@ -67,6 +67,12 @@ class TestTreeVisualizer(unittest.TestCase):
                           "    ProjectB/SubB1/Sub.1\n"
         self.assertEqual(self.visualizer.tree2str(tree).strip(), expected_output.strip())
 
+        # test with short output
+        tree = self.visualizer.build_tree(root_branch="ProjectB/SubB1")
+        expected_output = "SubB1\n" \
+                          "    Sub.1\n"
+        self.assertEqual(self.visualizer.tree2str(tree, short_tree=True).strip(), expected_output.strip())
+
     def test_multiple_roots_exception(self):
         """Test that trees with multiple roots raise an exception."""
         tree = nx.DiGraph()

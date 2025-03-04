@@ -1,5 +1,7 @@
 # data_allocator/tree_visualizer.py
 
+import os
+
 import networkx as nx
 
 from collections import deque
@@ -79,7 +81,7 @@ class TreeVisualizer:
         return subtree
 
     @staticmethod
-    def tree2str(tree, indent_level=0):
+    def tree2str(tree, indent_level=0, short_tree=False):
         """
         String representation of a DiGraph tree.
         """
@@ -92,12 +94,13 @@ class TreeVisualizer:
         root_node = root_nodes[0]
 
         child = list(tree.successors(root_node))
-        output_str = indent + "{}\n".format(root_node)
+        output_str = indent + "{}\n".format(os.path.basename(root_node) if short_tree else root_node)
 
         for c in child:
             sub_tree = TreeVisualizer.get_subtree(tree, c)
             output_str += TreeVisualizer.tree2str(sub_tree, 
-                                                  indent_level+1, 
+                                                  indent_level=indent_level+1, 
+                                                  short_tree=short_tree, 
                                                   )
 
         return output_str
