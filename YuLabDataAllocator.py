@@ -50,10 +50,12 @@ def delete_branch(branch_name):
     except Exception as e:
         raise e
 
-def ls_root(root): 
+def ls_root(args): 
     visualizer = TreeVisualizer(storage_manager=StorageManager(db_path=DB_PATH))
-    tree = visualizer.build_tree(root_branch=root)
-    output_str = TreeVisualizer.tree2str(tree)
+    tree = visualizer.build_tree(root_branch=args.root)
+    output_str = TreeVisualizer.tree2str(tree, 
+                                         short_tree=args.short_tree, 
+                                         )
 
     sys.stdout.write(output_str)
 
@@ -86,6 +88,12 @@ def main():
                            help="Root branch to list", 
                            default="", 
                            )
+    ls_parser.add_argument("-s", 
+                           "--short_tree", 
+                           action="store_true",
+                           dest="short_tree",
+                           help="Print a short version of the tree",
+                           )
 
     # Parse arguments
     args = parser.parse_args()
@@ -98,7 +106,7 @@ def main():
     elif args.command == "delete":
         delete_branch(args.branch_name)
     elif args.command == "ls":
-        ls_root(args.root)
+        ls_root(args)
     else:
         parser.print_help()
         sys.exit(1)
