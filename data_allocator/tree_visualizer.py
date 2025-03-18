@@ -94,6 +94,7 @@ class TreeVisualizer:
         root_node = root_nodes[0]
 
         child = list(tree.successors(root_node))
+        child.sort()
         output_str = indent + "{}\n".format(os.path.basename(root_node) if short_tree else root_node)
 
         for c in child:
