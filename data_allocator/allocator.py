@@ -6,6 +6,7 @@ import numpy as np
 
 from data_allocator.config_handler import ConfigHandler
 from data_allocator.storage_manager import StorageManager
+from data_allocator.exceptions import AllocatorException
 
 class Allocator:
     def __init__(self, config_path, db_path):
@@ -22,7 +23,7 @@ class Allocator:
         '''
         drive_paths = self.config.get_drive_paths().values()
         if not np.any([path.startswith(drive_path) for drive_path in drive_paths]):
-            raise Exception(f"[ERROR] Path '{path}' is not in any of the configured drives.")
+            raise AllocatorException(f"[ERROR] Path '{path}' is not in any of the configured drives.")
 
         os.makedirs(path, exist_ok=True)
     
@@ -33,12 +34,12 @@ class Allocator:
         '''
         drive_paths = self.config.get_drive_paths().values()
         if not np.any([path.startswith(drive_path) for drive_path in drive_paths]):
-            raise Exception(f"[ERROR] Path '{path}' is not in any of the configured drives.")
+            raise AllocatorException(f"[ERROR] Path '{path}' is not in any of the configured drives.")
 
         if os.path.exists(path):
             shutil.rmtree(path)
         else:
-            raise Exception(f"[ERROR] Path '{path}' does not exist.")
+            raise AllocatorException(f"[ERROR] Path '{path}' does not exist.")
 
     def check_space(self):
         """
@@ -55,7 +56,7 @@ class Allocator:
         Allocate the branch to the appropriate drive based on available space.
         """
         if self.storage.check_duplicates(branch_name):
-            raise Exception(f"[ERROR] Duplicate entry for '{branch_name}' exists.")
+            raise AllocatorException(f"[ERROR] Duplicate entry for '{branch_name}' exists.")
         
         space_info = self.check_space()
         target_drive = max(space_info, key=space_info.get)
@@ -80,7 +81,7 @@ class Allocator:
             path = os.path.join(self.config.get_drive_paths()[drive], branch_name)
             return path
         else:
-            raise Exception(f"[ERROR] No location found for '{branch_name}'")
+            raise AllocatorException(f"[ERROR] No location found for '{branch_name}'")
 
     def delete_branch(self, branch_name):
         """

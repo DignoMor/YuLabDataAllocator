@@ -4,6 +4,7 @@ import os
 import json
 
 from data_allocator.constants import CONFIG_PATH
+from data_allocator.exceptions import ConfigHandlerException
 
 class ConfigHandler:
     def __init__(self, config_path=CONFIG_PATH):
@@ -35,7 +36,7 @@ class ConfigHandler:
         drives = self._config.get("drives", {})
         for name, path in drives.items():
             if not os.path.exists(path):
-                raise Exception(f"Path '{path}' does not exist.")
+                raise ConfigHandlerException(f"Path '{path}' does not exist.")
 
     def get_drive_paths(self):
         """

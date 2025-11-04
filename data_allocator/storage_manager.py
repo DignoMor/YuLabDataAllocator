@@ -3,6 +3,8 @@
 import sqlite3
 import os
 
+from data_allocator.exceptions import StorageManagerException
+
 class StorageManager:
     def __init__(self, db_path):
         """
@@ -34,7 +36,7 @@ class StorageManager:
         - drive_name: The name of the drive.
         """
         if self.check_duplicates(branch_path):
-            raise Exception(f"[ERROR] Duplicate entry for '{branch_path}' exists.")
+            raise StorageManagerException(f"[ERROR] Duplicate entry for '{branch_path}' exists.")
         
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()

@@ -6,6 +6,7 @@ import networkx as nx
 
 from collections import deque
 from data_allocator.storage_manager import StorageManager
+from data_allocator.exceptions import TreeVisualizerException
 
 class TreeVisualizer:
     def __init__(self, storage_manager):
@@ -89,7 +90,7 @@ class TreeVisualizer:
         root_nodes = [node for node in tree.nodes if tree.in_degree(node) == 0]
 
         if not len(root_nodes) == 1:
-            raise Exception("Tree has multiple roots")
+            raise TreeVisualizerException("Tree has multiple roots")
         
         root_node = root_nodes[0]
 
