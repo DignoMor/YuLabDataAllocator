@@ -90,5 +90,54 @@ class Allocator:
         path = self.get_path(branch_name)
         self.remove_directory(path)
         self.storage.delete_location(branch_name)
+
+    def calculate_branch_disk_usage(self, branch_name):
+        """
+        Calculate the total disk usage of a branch directory.
+
+        Keyword arguments:
+        - branch_name: The branch name as stored in the database.
+
+        Returns:
+        - int: Total size in bytes.
         
+        Raises:
+        - AllocatorException: If the branch is not found in the database 
+                              or path is not a directory.
+        """
+        path = self.get_path(branch_name)
         
+        if not os.path.exists(path):
+            raise AllocatorException(f"[ERROR] Path '{path}' does not exist.")
+        
+        if not os.path.isdir(path):
+            raise AllocatorException(f"[ERROR] Path '{path}' is not a directory.")
+        
+        total_size = 0
+        try:
+            for dirpath, dirnames, filenames in os.walk(path):
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)
+                    try:
+                        total_size += os.path.getsize(filepath)
+                    except (OSError, IOError):
+                        # Skip files that can't be accessed
+                        pass
+        except (OSError, IOError) as e:
+            raise AllocatorException(f"[ERROR] Unable to calculate disk usage for '{path}': {e}")
+        
+        return total_size
+        
+    @staticmethod
+    def format_size(size):
+        """
+        Format the size in bytes to a human readable string.
+        """
+        if size < 1024:
+            return f"{size} B"
+        elif size < 1024**2:
+            return f"{size / 1024} KB"
+        elif size < 1024**3:
+            return f"{size / 1024**2} MB"
+        else:
+            return f"{size / 1024**3} GB"
